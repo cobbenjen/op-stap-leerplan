@@ -1,6 +1,7 @@
 const faseSelect = document.getElementById("faseSelect");
 const domeinSelect = document.getElementById("domeinSelect");
 const subdomeinSelect = document.getElementById("subdomeinSelect");
+const leerplanSelect = document.getElementById("leerplanSelect");
 const showButton = document.getElementById("showButton");
 const resetButton = document.getElementById("resetButton");
 const statusEl = document.getElementById("status");
@@ -8,6 +9,10 @@ const tableWrapper = document.getElementById("tableWrapper");
 const resultBody = document.getElementById("resultBody");
 
 let rows = [];
+const DATA_FILES = {
+  wiskunde: "./data.json",
+  "nederlands-en-communicatie": "./data2.json",
+};
 
 function normalizeValue(value) {
   if (value === null || value === undefined) return "";
@@ -172,9 +177,14 @@ function resetFilters() {
   clearResultsToNeutralState();
 }
 
+function getSelectedDataFile() {
+  return DATA_FILES[leerplanSelect?.value] || "./data.json";
+}
+
 async function loadData() {
+  const dataFile = getSelectedDataFile();
   try {
-    const response = await fetch("./data.json", { cache: "no-store" });
+    const response = await fetch(dataFile, { cache: "no-store" });
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
@@ -200,10 +210,10 @@ async function loadData() {
     resultBody.innerHTML = "";
     statusEl.classList.remove("hidden");
     setStatusMessage(
-      "Data laden mislukt. Controleer of data.json aanwezig en geldig is.",
+      "Data laden mislukt. Controleer of het gekozen JSON-bestand aanwezig en geldig is.",
       "error"
     );
-    console.error("Fout bij laden van data.json:", error);
+    console.error(`Fout bij laden van ${dataFile}:`, error);
   }
 }
 
@@ -212,5 +222,13 @@ domeinSelect.addEventListener("change", () => updateFilterOptions("domein"));
 subdomeinSelect.addEventListener("change", () => updateFilterOptions("subdomein"));
 showButton.addEventListener("click", showResults);
 resetButton.addEventListener("click", resetFilters);
+if (leerplanSelect) {
+  leerplanSelect.addEventListener("change", async () => {
+    faseSelect.value = "";
+    domeinSelect.value = "";
+    subdomeinSelect.value = "";
+    await loadData();
+  });
+}
 
 loadData();
