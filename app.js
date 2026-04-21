@@ -108,15 +108,15 @@ function renderTable(filteredRows) {
 
     const tdI = document.createElement("td");
     tdI.className = "px-4 py-3 text-slate-800";
-    tdI.textContent = row.Cluster || "-";
+    tdI.textContent = row.colI || "-";
 
     const tdJ = document.createElement("td");
     tdJ.className = "px-4 py-3 text-slate-800";
-    tdJ.textContent = row.Leerplandoel || "-";
+    tdJ.textContent = row.colJ || "-";
 
     const tdK = document.createElement("td");
     tdK.className = "px-4 py-3 text-slate-800";
-    tdK.textContent = row.Voorbeelden || "-";
+    tdK.textContent = row.colK || "-";
 
     tr.append(tdI, tdJ, tdK);
     fragment.appendChild(tr);
@@ -188,9 +188,9 @@ async function loadData() {
       fase: normalizeValue(item.fase),
       domein: normalizeValue(item.domein),
       subdomein: normalizeValue(item.subdomein),
-      Cluster: normalizeValue(item.Cluster ?? item.colI),
-      Leerplandoel: normalizeValue(item.Leerplandoel ?? item.colJ),
-      Voorbeelden: normalizeValue(item.Voorbeelden ?? item.colK),
+      colI: normalizeValue(item.colI),
+      colJ: normalizeValue(item.colJ),
+      colK: normalizeValue(item.colK),
     }));
 
     updateFilterOptions("");
